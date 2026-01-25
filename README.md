@@ -18,7 +18,7 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 
 ## Environment
 
-Create `.env.local` and set the API base URL:
+Create `.env.local` and set the API base URL (backend server):
 
 ```
 NEXT_PUBLIC_API_BASE_URL=http://localhost:3000/api/v1
