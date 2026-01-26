@@ -69,10 +69,16 @@ export default function ChildrenPage() {
           alignItems: "center",
           marginBottom: "24px",
           gap: "12px",
+          flexWrap: "wrap",
         }}
       >
         <h1 style={{ margin: 0 }}>子供一覧</h1>
-        <button onClick={handleLogout}>Logout</button>
+        <div style={{ display: "flex", gap: "12px", alignItems: "center" }}>
+          <button onClick={() => router.push("/children/new")}>
+            ＋子供追加
+          </button>
+          <button onClick={handleLogout}>Logout</button>
+        </div>
       </header>
 
       {status === "loading" && <p>Loading...</p>}
