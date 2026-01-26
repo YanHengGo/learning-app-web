@@ -21,7 +21,10 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 Create `.env.local` and set the API base URL (backend server):
 
 ```
-NEXT_PUBLIC_API_BASE_URL=http://localhost:3000/api/v1
+Next.js dev server: http://localhost:3000
+Backend API server: http://localhost:4000
+
+NEXT_PUBLIC_API_BASE_URL=http://localhost:4000/api/v1
 ```
 
 ## Login
