@@ -195,7 +195,7 @@ export default function ChildDetailPage() {
           )}
 
           <div style={{ display: "flex", gap: "12px", flexWrap: "wrap" }}>
-            <button disabled>
+            <button onClick={() => router.push(`/children/${child.id}/daily`)}>
               今日の学習
             </button>
             <button disabled>
