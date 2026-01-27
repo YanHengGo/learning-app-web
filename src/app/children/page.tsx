@@ -105,7 +105,9 @@ export default function ChildrenPage() {
                 border: "1px solid #e2e8f0",
                 borderRadius: "8px",
                 padding: "12px 16px",
+                cursor: "pointer",
               }}
+              onClick={() => router.push(`/children/${child.id}`)}
             >
               <h2 style={{ margin: "0 0 4px", fontSize: "16px" }}>
                 {child.name}
