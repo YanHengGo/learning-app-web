@@ -195,13 +195,13 @@ export default function ChildDetailPage() {
           )}
 
           <div style={{ display: "flex", gap: "12px", flexWrap: "wrap" }}>
-            <button onClick={() => router.push("/children/today")}>
+            <button disabled>
               今日の学習
             </button>
-            <button onClick={() => router.push("/children/tasks")}>
+            <button disabled>
               タスク管理
             </button>
-            <button onClick={() => router.push("/children/calendar")}>
+            <button disabled>
               カレンダー
             </button>
           </div>
