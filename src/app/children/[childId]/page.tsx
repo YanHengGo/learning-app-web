@@ -198,6 +198,9 @@ export default function ChildDetailPage() {
             <button onClick={() => router.push(`/children/${child.id}/daily`)}>
               今日の学習
             </button>
+            <button onClick={() => router.push(`/children/${child.id}/summary`)}>
+              学習サマリー
+            </button>
             <button disabled>
               タスク管理
             </button>
