@@ -5,6 +5,9 @@ import { useRouter } from "next/navigation";
 import { apiFetch, ApiError } from "@/lib/api";
 import { clearToken, getToken } from "@/lib/auth";
 import type { Child } from "@/types/child";
+import AppShell from "@/components/AppShell";
+import TopBar from "@/components/TopBar";
+import { PrimaryButton, SecondaryButton } from "@/components/Button";
 
 type Status = "idle" | "loading" | "success" | "error";
 
@@ -61,25 +64,18 @@ export default function ChildrenPage() {
   };
 
   return (
-    <div style={{ padding: "40px" }}>
-      <header
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          marginBottom: "24px",
-          gap: "12px",
-          flexWrap: "wrap",
-        }}
-      >
-        <h1 style={{ margin: 0 }}>子供一覧</h1>
-        <div style={{ display: "flex", gap: "12px", alignItems: "center" }}>
-          <button onClick={() => router.push("/children/new")}>
-            ＋子供追加
-          </button>
-          <button onClick={handleLogout}>Logout</button>
-        </div>
-      </header>
+    <AppShell>
+      <TopBar
+        title="子供一覧"
+        actions={
+          <>
+            <PrimaryButton onClick={() => router.push("/children/new")}>
+              ＋子供追加
+            </PrimaryButton>
+            <SecondaryButton onClick={handleLogout}>Logout</SecondaryButton>
+          </>
+        }
+      />
 
       {status === "loading" && <p>Loading...</p>}
 
@@ -103,9 +99,10 @@ export default function ChildrenPage() {
               key={child.id}
               style={{
                 border: "1px solid #e2e8f0",
-                borderRadius: "8px",
-                padding: "12px 16px",
+                borderRadius: "12px",
+                padding: "16px",
                 cursor: "pointer",
+                background: "#ffffff",
               }}
               onClick={() => router.push(`/children/${child.id}`)}
             >
@@ -119,6 +116,6 @@ export default function ChildrenPage() {
           ))}
         </div>
       )}
-    </div>
+    </AppShell>
   );
 }

@@ -5,6 +5,10 @@ import { useRouter } from "next/navigation";
 import { apiFetch, ApiError } from "@/lib/api";
 import { clearToken, getToken } from "@/lib/auth";
 import type { Child } from "@/types/child";
+import AppShell from "@/components/AppShell";
+import TopBar from "@/components/TopBar";
+import { Field, TextInput } from "@/components/Field";
+import { PrimaryButton, SecondaryButton } from "@/components/Button";
 
 export default function ChildCreatePage() {
   const router = useRouter();
@@ -63,39 +67,41 @@ export default function ChildCreatePage() {
   };
 
   return (
-    <div style={{ padding: "40px" }}>
-      <h1 style={{ marginBottom: "24px" }}>子供追加</h1>
+    <AppShell>
+      <TopBar title="子供追加" backHref="/children" />
       <form
         onSubmit={handleSubmit}
         style={{ display: "grid", gap: "16px", maxWidth: "420px" }}
       >
-        <label style={{ display: "grid", gap: "8px" }}>
-          名前
-          <input
+        <Field label="名前">
+          <TextInput
             type="text"
             value={name}
             onChange={(event) => setName(event.target.value)}
             required
           />
-        </label>
-        <label style={{ display: "grid", gap: "8px" }}>
-          学年
-          <input
+        </Field>
+        <Field label="学年">
+          <TextInput
             type="text"
             value={grade}
             onChange={(event) => setGrade(event.target.value)}
           />
-        </label>
-        {error ? <p style={{ color: "#dc2626" }}>{error}</p> : null}
+        </Field>
+        {error ? <p style={{ color: "#dc2626", margin: 0 }}>{error}</p> : null}
         <div style={{ display: "flex", gap: "12px" }}>
-          <button type="submit" disabled={loading}>
-            {loading ? "Saving..." : "登録"}
-          </button>
-          <button type="button" onClick={handleCancel} disabled={loading}>
+          <PrimaryButton type="submit" loading={loading} loadingText="Saving...">
+            登録
+          </PrimaryButton>
+          <SecondaryButton
+            type="button"
+            onClick={handleCancel}
+            disabled={loading}
+          >
             キャンセル
-          </button>
+          </SecondaryButton>
         </div>
       </form>
-    </div>
+    </AppShell>
   );
 }

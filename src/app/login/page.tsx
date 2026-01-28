@@ -4,6 +4,10 @@ import { FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
 import { apiFetch, ApiError } from "@/lib/api";
 import { setToken } from "@/lib/auth";
+import AppShell from "@/components/AppShell";
+import TopBar from "@/components/TopBar";
+import { Field, TextInput } from "@/components/Field";
+import { PrimaryButton } from "@/components/Button";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -36,12 +40,22 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="login-page">
-      <form className="login-card" onSubmit={handleSubmit}>
-        <h1>ログイン</h1>
-        <label>
-          メールアドレス
-          <input
+    <AppShell>
+      <TopBar title="ログイン" />
+      <form
+        onSubmit={handleSubmit}
+        style={{
+          maxWidth: "420px",
+          display: "grid",
+          gap: "16px",
+          padding: "16px",
+          background: "#ffffff",
+          border: "1px solid #e2e8f0",
+          borderRadius: "12px",
+        }}
+      >
+        <Field label="メールアドレス">
+          <TextInput
             type="email"
             name="email"
             value={email}
@@ -49,10 +63,9 @@ export default function LoginPage() {
             autoComplete="email"
             required
           />
-        </label>
-        <label>
-          パスワード
-          <input
+        </Field>
+        <Field label="パスワード">
+          <TextInput
             type="password"
             name="password"
             value={password}
@@ -60,68 +73,12 @@ export default function LoginPage() {
             autoComplete="current-password"
             required
           />
-        </label>
-        {error ? <p className="error">{error}</p> : null}
-        <button type="submit" disabled={loading}>
-          {loading ? "ログイン中..." : "ログイン"}
-        </button>
+        </Field>
+        {error ? <p style={{ color: "#dc2626", margin: 0 }}>{error}</p> : null}
+        <PrimaryButton type="submit" loading={loading} loadingText="ログイン中...">
+          ログイン
+        </PrimaryButton>
       </form>
-      <style jsx>{`
-        .login-page {
-          min-height: 100vh;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          padding: 24px;
-          background: #f5f6f8;
-        }
-        .login-card {
-          width: min(100%, 420px);
-          background: #ffffff;
-          border-radius: 12px;
-          padding: 32px;
-          box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
-          display: flex;
-          flex-direction: column;
-          gap: 16px;
-        }
-        h1 {
-          margin: 0 0 8px;
-          font-size: 24px;
-        }
-        label {
-          display: flex;
-          flex-direction: column;
-          gap: 8px;
-          font-size: 14px;
-        }
-        input {
-          padding: 10px 12px;
-          border-radius: 8px;
-          border: 1px solid #cbd5f5;
-          font-size: 14px;
-        }
-        button {
-          margin-top: 8px;
-          padding: 12px;
-          border: none;
-          border-radius: 8px;
-          background: #1d4ed8;
-          color: #fff;
-          font-weight: 600;
-          cursor: pointer;
-          transition: opacity 0.2s ease;
-        }
-        button:disabled {
-          opacity: 0.6;
-          cursor: not-allowed;
-        }
-        .error {
-          color: #dc2626;
-          font-size: 14px;
-          margin: 0;
-        }
-      `}</style>
-    </div>
+    </AppShell>
   );
 }
