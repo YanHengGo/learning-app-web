@@ -201,7 +201,7 @@ export default function ChildDetailPage() {
             <button onClick={() => router.push(`/children/${child.id}/summary`)}>
               学習サマリー
             </button>
-            <button disabled>
+            <button onClick={() => router.push(`/children/${child.id}/tasks`)}>
               タスク管理
             </button>
             <button disabled>
