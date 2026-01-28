@@ -4,6 +4,10 @@ import { useEffect, useMemo, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { apiFetch, ApiError } from "@/lib/api";
 import { clearToken, getToken } from "@/lib/auth";
+import AppShell from "@/components/AppShell";
+import TopBar from "@/components/TopBar";
+import { Field, NumberInput, TextArea, TextInput } from "@/components/Field";
+import { PrimaryButton, SecondaryButton } from "@/components/Button";
 
 type Task = {
   id: string;
@@ -50,6 +54,7 @@ export default function TasksPage() {
     DAYS.map(() => false)
   );
   const [isArchived, setIsArchived] = useState(false);
+  const allDaysSelected = days.every(Boolean);
 
   const resetForm = () => {
     setEditingTaskId(null);
@@ -189,15 +194,8 @@ export default function TasksPage() {
   };
 
   return (
-    <div style={{ padding: "40px" }}>
-      <button
-        onClick={() => router.push(`/children/${childId}`)}
-        style={{ marginBottom: "16px" }}
-      >
-        ← 子供詳細へ戻る
-      </button>
-
-      <h1 style={{ margin: "0 0 16px" }}>タスク管理</h1>
+    <AppShell>
+      <TopBar title="タスク管理" backHref={`/children/${childId}`} />
 
       <div style={{ display: "grid", gap: "24px" }}>
         <section style={{ display: "grid", gap: "12px", maxWidth: "520px" }}>
@@ -206,47 +204,52 @@ export default function TasksPage() {
               {editingTaskId ? "タスク編集" : "タスク追加"}
             </h2>
             {editingTaskId ? (
-              <button onClick={resetForm} disabled={saving}>
+              <SecondaryButton onClick={resetForm} disabled={saving}>
                 新規作成に戻す
-              </button>
+              </SecondaryButton>
             ) : null}
           </div>
-          <label style={{ display: "grid", gap: "6px" }}>
-            名前
-            <input
+          <Field label="名前">
+            <TextInput
               type="text"
               value={name}
               onChange={(event) => setName(event.target.value)}
             />
-          </label>
-          <label style={{ display: "grid", gap: "6px" }}>
-            科目
-            <input
+          </Field>
+          <Field label="科目">
+            <TextInput
               type="text"
               value={subject}
               onChange={(event) => setSubject(event.target.value)}
             />
-          </label>
-          <label style={{ display: "grid", gap: "6px" }}>
-            説明
-            <textarea
+          </Field>
+          <Field label="説明">
+            <TextArea
               value={description}
               onChange={(event) => setDescription(event.target.value)}
               rows={3}
             />
-          </label>
-          <label style={{ display: "grid", gap: "6px" }}>
-            デフォルト分数
-            <input
-              type="number"
+          </Field>
+          <Field label="デフォルト分数">
+            <NumberInput
               min={0}
               value={defaultMinutes}
               onChange={(event) => setDefaultMinutes(event.target.value)}
             />
-          </label>
+          </Field>
           <div style={{ display: "grid", gap: "6px" }}>
-            <span>曜日</span>
-            <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
+            <span style={{ fontSize: "13px", color: "#334155" }}>曜日</span>
+            <div style={{ display: "flex", gap: "12px", flexWrap: "wrap" }}>
+              <label style={{ display: "flex", gap: "4px" }}>
+                <input
+                  type="checkbox"
+                  checked={allDaysSelected}
+                  onChange={() =>
+                    setDays((prev) => prev.map(() => !allDaysSelected))
+                  }
+                />
+                全曜日
+              </label>
               {DAYS.map((label, index) => (
                 <label key={label} style={{ display: "flex", gap: "4px" }}>
                   <input
@@ -270,15 +273,15 @@ export default function TasksPage() {
           {saveError ? (
             <p style={{ color: "#dc2626", margin: 0 }}>{saveError}</p>
           ) : null}
-          <button onClick={handleSubmit} disabled={saving}>
-            {saving ? "Saving..." : "保存"}
-          </button>
+          <PrimaryButton onClick={handleSubmit} loading={saving} loadingText="Saving...">
+            保存
+          </PrimaryButton>
         </section>
 
         <section style={{ display: "grid", gap: "12px" }}>
           <div style={{ display: "flex", gap: "12px", alignItems: "center" }}>
             <h2 style={{ margin: 0, fontSize: "16px" }}>タスク一覧</h2>
-            <button onClick={fetchTasks}>再取得</button>
+            <SecondaryButton onClick={fetchTasks}>再取得</SecondaryButton>
           </div>
 
           {status === "loading" && <p>Loading...</p>}
@@ -286,7 +289,7 @@ export default function TasksPage() {
           {status === "error" && (
             <div style={{ display: "grid", gap: "8px" }}>
               <p>読み込みに失敗しました: {error?.message ?? "不明なエラー"}</p>
-              <button onClick={fetchTasks}>再試行</button>
+              <SecondaryButton onClick={fetchTasks}>再試行</SecondaryButton>
             </div>
           )}
 
@@ -300,10 +303,11 @@ export default function TasksPage() {
                     key={task.id}
                     style={{
                       border: "1px solid #e2e8f0",
-                      borderRadius: "8px",
+                      borderRadius: "12px",
                       padding: "12px 16px",
                       display: "grid",
                       gap: "6px",
+                      background: "#ffffff",
                     }}
                   >
                     <div
@@ -321,7 +325,9 @@ export default function TasksPage() {
                           {task.subject} / {task.default_minutes}分
                         </p>
                       </div>
-                      <button onClick={() => handleEdit(task)}>編集</button>
+                      <SecondaryButton onClick={() => handleEdit(task)}>
+                        編集
+                      </SecondaryButton>
                     </div>
                     {task.description ? (
                       <p style={{ margin: 0, color: "#64748b" }}>
@@ -344,6 +350,6 @@ export default function TasksPage() {
           )}
         </section>
       </div>
-    </div>
+    </AppShell>
   );
 }

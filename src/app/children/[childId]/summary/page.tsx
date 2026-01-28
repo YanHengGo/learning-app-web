@@ -4,6 +4,10 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { apiFetch, ApiError } from "@/lib/api";
 import { clearToken, getToken } from "@/lib/auth";
+import AppShell from "@/components/AppShell";
+import TopBar from "@/components/TopBar";
+import { PrimaryButton, SecondaryButton } from "@/components/Button";
+import { Field, TextInput } from "@/components/Field";
 
 type SummaryItem = {
   minutes: number;
@@ -129,51 +133,47 @@ export default function SummaryPage() {
   };
 
   return (
-    <div style={{ padding: "40px" }}>
-      <button
-        onClick={() => router.push(`/children/${childId}`)}
-        style={{ marginBottom: "16px" }}
-      >
-        ← 子供詳細へ戻る
-      </button>
-
-      <h1 style={{ margin: "0 0 16px" }}>学習サマリー</h1>
+    <AppShell>
+      <TopBar title="学習サマリー" backHref={`/children/${childId}`} />
 
       <div style={{ display: "flex", gap: "8px", marginBottom: "12px" }}>
-        <button
+        <SecondaryButton
           onClick={() => handleModeChange("week")}
           disabled={mode === "week"}
         >
           今週
-        </button>
-        <button
+        </SecondaryButton>
+        <SecondaryButton
           onClick={() => handleModeChange("month")}
           disabled={mode === "month"}
         >
           今月
-        </button>
-        <button
+        </SecondaryButton>
+        <SecondaryButton
           onClick={() => handleModeChange("range")}
           disabled={mode === "range"}
         >
           期間指定
-        </button>
+        </SecondaryButton>
       </div>
 
       {mode === "range" && (
-        <div style={{ display: "flex", gap: "8px", marginBottom: "16px" }}>
-          <input
-            type="date"
-            value={range.from}
-            onChange={(event) => handleRangeChange("from", event.target.value)}
-          />
-          <span>〜</span>
-          <input
-            type="date"
-            value={range.to}
-            onChange={(event) => handleRangeChange("to", event.target.value)}
-          />
-          <button onClick={fetchSummary}>再取得</button>
+        <div style={{ display: "flex", gap: "12px", marginBottom: "16px" }}>
+          <Field label="From">
+            <TextInput
+              type="date"
+              value={range.from}
+              onChange={(event) => handleRangeChange("from", event.target.value)}
+            />
+          </Field>
+          <Field label="To">
+            <TextInput
+              type="date"
+              value={range.to}
+              onChange={(event) => handleRangeChange("to", event.target.value)}
+            />
+          </Field>
+          <PrimaryButton onClick={fetchSummary}>再取得</PrimaryButton>
         </div>
       )}
 
@@ -182,7 +182,7 @@ export default function SummaryPage() {
       {status === "error" && (
         <div style={{ display: "grid", gap: "12px" }}>
           <p>読み込みに失敗しました: {error?.message ?? "不明なエラー"}</p>
-          <button onClick={fetchSummary}>再試行</button>
+          <SecondaryButton onClick={fetchSummary}>再試行</SecondaryButton>
         </div>
       )}
 
@@ -294,6 +294,6 @@ export default function SummaryPage() {
           </div>
         </div>
       )}
-    </div>
+    </AppShell>
   );
 }

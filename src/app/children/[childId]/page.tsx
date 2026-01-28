@@ -5,6 +5,10 @@ import { useParams, useRouter } from "next/navigation";
 import { apiFetch, ApiError } from "@/lib/api";
 import { clearToken, getToken } from "@/lib/auth";
 import type { Child } from "@/types/child";
+import AppShell from "@/components/AppShell";
+import TopBar from "@/components/TopBar";
+import { Field, TextInput } from "@/components/Field";
+import { PrimaryButton, SecondaryButton } from "@/components/Button";
 
 type Status = "idle" | "loading" | "success" | "error";
 
@@ -129,13 +133,8 @@ export default function ChildDetailPage() {
   };
 
   return (
-    <div style={{ padding: "40px" }}>
-      <button
-        onClick={() => router.push("/children")}
-        style={{ marginBottom: "16px" }}
-      >
-        ← 子供一覧に戻る
-      </button>
+    <AppShell>
+      <TopBar title="子供詳細" backHref="/children" />
 
       {status === "loading" && <p>Loading...</p>}
 
@@ -147,11 +146,11 @@ export default function ChildDetailPage() {
         <div style={{ display: "grid", gap: "16px" }}>
           {!isEditing ? (
             <div style={{ display: "grid", gap: "8px" }}>
-              <h1 style={{ margin: 0 }}>{child.name}</h1>
+              <h2 style={{ margin: 0, fontSize: "22px" }}>{child.name}</h2>
               <p style={{ margin: 0, color: "#475569" }}>
                 学年: {child.grade ?? "未設定"}
               </p>
-              <button
+              <SecondaryButton
                 onClick={() => {
                   setSaveError(null);
                   setIsEditing(true);
@@ -159,57 +158,63 @@ export default function ChildDetailPage() {
                 style={{ width: "fit-content" }}
               >
                 編集
-              </button>
+              </SecondaryButton>
             </div>
           ) : (
             <div style={{ display: "grid", gap: "12px", maxWidth: "420px" }}>
-              <label style={{ display: "grid", gap: "6px" }}>
-                名前
-                <input
+              <Field label="名前">
+                <TextInput
                   type="text"
                   value={nameInput}
                   onChange={(event) => setNameInput(event.target.value)}
                   required
                 />
-              </label>
-              <label style={{ display: "grid", gap: "6px" }}>
-                学年
-                <input
+              </Field>
+              <Field label="学年">
+                <TextInput
                   type="text"
                   value={gradeInput}
                   onChange={(event) => setGradeInput(event.target.value)}
                 />
-              </label>
+              </Field>
               {saveError ? (
                 <p style={{ color: "#dc2626", margin: 0 }}>{saveError}</p>
               ) : null}
               <div style={{ display: "flex", gap: "12px" }}>
-                <button onClick={handleSave} disabled={saving}>
-                  {saving ? "Saving..." : "保存"}
-                </button>
-                <button onClick={handleCancelEdit} disabled={saving}>
+                <PrimaryButton
+                  onClick={handleSave}
+                  loading={saving}
+                  loadingText="Saving..."
+                >
+                  保存
+                </PrimaryButton>
+                <SecondaryButton onClick={handleCancelEdit} disabled={saving}>
                   キャンセル
-                </button>
+                </SecondaryButton>
               </div>
             </div>
           )}
 
           <div style={{ display: "flex", gap: "12px", flexWrap: "wrap" }}>
-            <button onClick={() => router.push(`/children/${child.id}/daily`)}>
+            <SecondaryButton
+              onClick={() => router.push(`/children/${child.id}/daily`)}
+            >
               今日の学習
-            </button>
-            <button onClick={() => router.push(`/children/${child.id}/summary`)}>
+            </SecondaryButton>
+            <SecondaryButton
+              onClick={() => router.push(`/children/${child.id}/summary`)}
+            >
               学習サマリー
-            </button>
-            <button onClick={() => router.push(`/children/${child.id}/tasks`)}>
+            </SecondaryButton>
+            <SecondaryButton
+              onClick={() => router.push(`/children/${child.id}/tasks`)}
+            >
               タスク管理
-            </button>
-            <button disabled>
-              カレンダー
-            </button>
+            </SecondaryButton>
+            <SecondaryButton disabled>カレンダー</SecondaryButton>
           </div>
         </div>
       )}
-    </div>
+    </AppShell>
   );
 }

@@ -4,6 +4,9 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { apiFetch, ApiError } from "@/lib/api";
 import { clearToken, getToken } from "@/lib/auth";
+import AppShell from "@/components/AppShell";
+import TopBar from "@/components/TopBar";
+import { PrimaryButton, SecondaryButton } from "@/components/Button";
 
 type DailyTask = {
   task_id: string;
@@ -273,16 +276,10 @@ export default function DailyPage() {
   };
 
   return (
-    <div style={{ padding: "40px" }}>
-      <button
-        onClick={() => router.push(`/children/${childId}`)}
-        style={{ marginBottom: "16px" }}
-      >
-        ← 子供詳細へ戻る
-      </button>
+    <AppShell>
+      <TopBar title="今日の学習" backHref={`/children/${childId}`} />
 
       <div style={{ marginBottom: "16px" }}>
-        <h1 style={{ margin: "0 0 8px" }}>今日の学習</h1>
         <p style={{ margin: 0, color: "#475569" }}>{selectedDate}</p>
       </div>
 
@@ -296,7 +293,7 @@ export default function DailyPage() {
       >
         <div style={{ display: "grid", gap: "12px" }}>
           <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
-            <button
+            <SecondaryButton
               onClick={() =>
                 setMonthState((prev) => {
                   const date = new Date(prev.year, prev.month - 1, 1);
@@ -305,11 +302,11 @@ export default function DailyPage() {
               }
             >
               前月
-            </button>
+            </SecondaryButton>
             <span>
               {monthState.year}-{`${monthState.month + 1}`.padStart(2, "0")}
             </span>
-            <button
+            <SecondaryButton
               onClick={() =>
                 setMonthState((prev) => {
                   const date = new Date(prev.year, prev.month + 1, 1);
@@ -318,7 +315,7 @@ export default function DailyPage() {
               }
             >
               次月
-            </button>
+            </SecondaryButton>
           </div>
 
           {calendarStatus === "loading" && <p>Loading...</p>}
@@ -328,7 +325,7 @@ export default function DailyPage() {
                 読み込みに失敗しました:{" "}
                 {calendarError?.message ?? "不明なエラー"}
               </p>
-              <button onClick={fetchCalendar}>再取得</button>
+              <SecondaryButton onClick={fetchCalendar}>再取得</SecondaryButton>
             </div>
           )}
           {calendarStatus === "success" && (
@@ -385,9 +382,12 @@ export default function DailyPage() {
                       style={{
                         padding: "6px 0",
                         borderRadius: "6px",
-                        border: isSelected ? "2px solid #2563eb" : "1px solid #e2e8f0",
+                        border: isSelected
+                          ? "2px solid #2563eb"
+                          : "1px solid #e2e8f0",
                         background,
                         fontWeight: isSelected ? 700 : 400,
+                        cursor: "pointer",
                       }}
                     >
                       {day}
@@ -407,7 +407,7 @@ export default function DailyPage() {
           {status === "error" && (
             <div style={{ display: "grid", gap: "12px" }}>
               <p>読み込みに失敗しました: {error?.message ?? "不明なエラー"}</p>
-              <button onClick={fetchDaily}>再取得</button>
+              <SecondaryButton onClick={fetchDaily}>再取得</SecondaryButton>
             </div>
           )}
 
@@ -426,8 +426,9 @@ export default function DailyPage() {
                         gap: "12px",
                         alignItems: "center",
                         border: "1px solid #e2e8f0",
-                        borderRadius: "8px",
+                        borderRadius: "12px",
                         padding: "12px 16px",
+                        background: "#ffffff",
                       }}
                     >
                       <input
@@ -458,13 +459,17 @@ export default function DailyPage() {
               {saveError ? (
                 <p style={{ color: "#dc2626", margin: 0 }}>{saveError}</p>
               ) : null}
-              <button onClick={handleSave} disabled={saving}>
-                {saving ? "Saving..." : "保存"}
-              </button>
+              <PrimaryButton
+                onClick={handleSave}
+                loading={saving}
+                loadingText="Saving..."
+              >
+                保存
+              </PrimaryButton>
             </div>
           )}
         </div>
       </div>
-    </div>
+    </AppShell>
   );
 }
