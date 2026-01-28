@@ -133,6 +133,11 @@ export default function TasksPage() {
       return;
     }
 
+    if (!days.some(Boolean)) {
+      setSaveError("曜日は最低1つ選択してください");
+      return;
+    }
+
     const minutesValue = Number(defaultMinutes);
     if (Number.isNaN(minutesValue)) {
       setSaveError("デフォルト分数が不正です");
