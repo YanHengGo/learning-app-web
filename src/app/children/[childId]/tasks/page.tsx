@@ -17,6 +17,7 @@ type Task = {
   default_minutes: number;
   days_mask: number;
   is_archived?: boolean;
+  sort_order?: number;
 };
 
 type Status = "idle" | "loading" | "success" | "error";
@@ -44,6 +45,8 @@ export default function TasksPage() {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [saving, setSaving] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
+  const [reordering, setReordering] = useState(false);
+  const [reorderMessage, setReorderMessage] = useState<string | null>(null);
 
   const [editingTaskId, setEditingTaskId] = useState<string | null>(null);
   const [name, setName] = useState("");
@@ -193,6 +196,54 @@ export default function TasksPage() {
     }
   };
 
+  const moveTask = (fromIndex: number, toIndex: number) => {
+    if (fromIndex === toIndex) {
+      return;
+    }
+    setTasks((prev) => {
+      const next = [...prev];
+      const [moved] = next.splice(fromIndex, 1);
+      next.splice(toIndex, 0, moved);
+      return next;
+    });
+    setReorderMessage(null);
+  };
+
+  const handleReorderSave = async () => {
+    if (!token || typeof childId !== "string") {
+      return;
+    }
+    setReordering(true);
+    setSaveError(null);
+    setReorderMessage(null);
+
+    try {
+      const items = tasks.map((task, index) => ({
+        task_id: task.id,
+        sort_order: index,
+      }));
+      await apiFetch(`/children/${childId}/tasks/reorder`, {
+        method: "PUT",
+        token,
+        body: { items },
+      });
+      setReorderMessage("保存しました");
+    } catch (err) {
+      if (err instanceof ApiError && err.status === 401) {
+        clearToken();
+        router.replace("/login");
+        return;
+      }
+      const message =
+        err instanceof Error
+          ? err.message
+          : "原因不明のエラーが発生しました";
+      setSaveError(`並び替えに失敗しました: ${message}`);
+    } finally {
+      setReordering(false);
+    }
+  };
+
   return (
     <AppShell>
       <TopBar title="タスク管理" backHref={`/children/${childId}`} />
@@ -273,7 +324,11 @@ export default function TasksPage() {
           {saveError ? (
             <p style={{ color: "#dc2626", margin: 0 }}>{saveError}</p>
           ) : null}
-          <PrimaryButton onClick={handleSubmit} loading={saving} loadingText="Saving...">
+          <PrimaryButton
+            onClick={handleSubmit}
+            loading={saving}
+            loadingText="Saving..."
+          >
             保存
           </PrimaryButton>
         </section>
@@ -298,7 +353,7 @@ export default function TasksPage() {
               {tasks.length === 0 ? (
                 <p>タスクがありません</p>
               ) : (
-                tasks.map((task) => (
+                tasks.map((task, index) => (
                   <div
                     key={task.id}
                     style={{
@@ -325,9 +380,23 @@ export default function TasksPage() {
                           {task.subject} / {task.default_minutes}分
                         </p>
                       </div>
-                      <SecondaryButton onClick={() => handleEdit(task)}>
-                        編集
-                      </SecondaryButton>
+                      <div style={{ display: "flex", gap: "8px" }}>
+                        <SecondaryButton
+                          onClick={() => moveTask(index, index - 1)}
+                          disabled={index === 0 || reordering}
+                        >
+                          ↑
+                        </SecondaryButton>
+                        <SecondaryButton
+                          onClick={() => moveTask(index, index + 1)}
+                          disabled={index === tasks.length - 1 || reordering}
+                        >
+                          ↓
+                        </SecondaryButton>
+                        <SecondaryButton onClick={() => handleEdit(task)}>
+                          編集
+                        </SecondaryButton>
+                      </div>
                     </div>
                     {task.description ? (
                       <p style={{ margin: 0, color: "#64748b" }}>
@@ -348,6 +417,22 @@ export default function TasksPage() {
               )}
             </div>
           )}
+          {tasks.length > 0 ? (
+            <div style={{ display: "flex", gap: "12px", alignItems: "center" }}>
+              <PrimaryButton
+                onClick={handleReorderSave}
+                loading={reordering}
+                loadingText="保存中..."
+              >
+                並び順を保存
+              </PrimaryButton>
+              {reorderMessage ? (
+                <p style={{ margin: 0, color: "#16a34a" }}>
+                  {reorderMessage}
+                </p>
+              ) : null}
+            </div>
+          ) : null}
         </section>
       </div>
     </AppShell>
