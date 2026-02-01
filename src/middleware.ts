@@ -8,9 +8,15 @@ import {
 
 export function middleware(request: NextRequest) {
   const origin = request.headers.get("origin") ?? null;
-  const allowedOrigin = origin !== null ? getAllowedOrigin(origin) : null;
+  const appOrigin = request.nextUrl.origin;
+  const allowedOrigin =
+    origin !== null
+      ? origin === appOrigin
+        ? origin
+        : getAllowedOrigin(origin)
+      : null;
 
-  // Origin present but not in allowlist → block
+  // Origin present but not same-origin and not in allowlist → block
   if (origin !== null && allowedOrigin === null) {
     return new NextResponse("Not allowed by CORS", { status: 403 });
   }

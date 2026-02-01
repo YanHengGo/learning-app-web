@@ -27,6 +27,12 @@ Backend API server: http://localhost:4000
 NEXT_PUBLIC_API_BASE_URL=http://localhost:4000/api/v1
 ```
 
+CORS: same-origin requests (e.g. the app’s own origin) and `*.vercel.app` are always allowed. To allow other origins (e.g. a custom domain or another frontend), set a comma-separated list:
+
+```
+CORS_ORIGINS=https://myapp.com,https://other-client.example.com
+```
+
 ## Login
 
 - Start the dev server with `npm run dev`
