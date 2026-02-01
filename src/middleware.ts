@@ -26,6 +26,7 @@ export function middleware(request: NextRequest) {
     corsHeaders["Access-Control-Allow-Origin"] = allowedOrigin;
     corsHeaders["Access-Control-Allow-Methods"] = CORS_METHODS;
     corsHeaders["Access-Control-Allow-Headers"] = CORS_ALLOWED_HEADERS;
+    corsHeaders["Vary"] = "Origin";
   }
 
   // Preflight
