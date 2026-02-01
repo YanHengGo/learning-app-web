@@ -1,52 +1,120 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Learning App Web（子供の学習管理アプリ / フロントエンド）
 
-## Getting Started
+このリポジトリは、**子供の学習状況を日々記録・可視化するための Web アプリ（フロントエンド）** です。  
+家庭内での学習管理を、できるだけ「続けやすく」「見える化」することを目的としています。
 
-First, run the development server:
+現在は **個人開発・開発途中** のプロジェクトです。
+
+---
+
+## 🧩 プロジェクト概要
+
+- 対象：家庭学習（小学生〜中学生想定）
+- 目的：
+  - 子供ごとの学習タスク管理
+  - 毎日の学習実績（Daily）
+  - 週 / 月 / 期間サマリー
+  - カレンダーによる達成状況の可視化
+- 将来的には：
+  - メールリンクログイン（パスワード不要）
+  - インセンティブ（ご褒美）機能
+  - 学習量の見える化・モチベーション設計
+
+---
+
+## 🏗️ 技術スタック（フロントエンド）
+
+- **Next.js（App Router）**
+- **TypeScript**
+- デプロイ：**Vercel**
+- API 接続先：外部バックエンド（Render 上の API）
+
+---
+
+## 🔗 バックエンド構成（参考）
+
+このフロントエンドは、以下のバックエンドと連携します。
+
+- API：Node.js + Express（Render）
+- DB：PostgreSQL（Vercel Postgres / Neon）
+- 認証：
+  - 現在：メール + パスワード
+  - 将来：**メールリンク（Magic Link）方式**
+
+※ バックエンドは別リポジトリで管理されています。
+
+---
+
+## 🚧 現在の開発状況
+
+- [x] ログイン画面
+- [x] 子供一覧 / 追加 / 編集
+- [x] タスク管理（CRUD / 並び替え）
+- [x] 今日の学習（Daily）
+- [x] カレンダー表示
+- [x] 学習サマリー（週 / 月 / 期間）
+- [ ] ユーザー登録画面（メールリンク方式）
+- [ ] インセンティブ（ご褒美）機能
+- [ ] UI / UX 改善
+
+※ 現在も仕様・実装は頻繁に変更されます。
+
+---
+
+## ⚙️ 環境構築（ローカル）
+
+### 1. インストール
 
 ```bash
+npm install
+```
+
+### 2. 環境変数の設定
+
+プロジェクト直下に .env.local を作成し、以下を設定します。
+
+NEXT_PUBLIC_API_BASE_URL=https://<APIのベースURL>/api/v1
+
+例（ローカル開発時）：
+
+NEXT_PUBLIC_API_BASE_URL=http://localhost:3000/api/v1
+
+
+⸻
+
+▶️ 起動方法
+
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+起動後、以下にアクセスします。
 
-## Environment
+http://localhost:3000/login
 
-Create `.env.local` and set the API base URL (backend server):
 
-```
-Next.js dev server: http://localhost:3000
-Backend API server: http://localhost:4000
+⸻
 
-NEXT_PUBLIC_API_BASE_URL=http://localhost:4000/api/v1
-```
+🚀 デプロイ
+	•	GitHub と Vercel を連携
+	•	main ブランチへの push / PR マージで自動デプロイ
+	•	Preview Deployment を使った動作確認も可能
 
-## Login
+⸻
 
-- Start the dev server with `npm run dev`
-- Open `http://localhost:3000/login` and sign in
+📌 注意事項
+	•	本プロジェクトは 学習・家庭利用を目的とした個人開発 です
+	•	セキュリティ・可用性は商用水準ではありません
+	•	API 仕様は変更される可能性があります
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+⸻
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+📄 ライセンス
 
-## Learn More
+未定（必要に応じて後日追加）
 
-To learn more about Next.js, take a look at the following resources:
+⸻
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+🙋‍♂️ 開発メモ
+	•	「完璧に作る」より「続けて使える」を優先
+	•	家族（親・子）が直感的に使える UI を重視
+	•	実運用しながら改善していくスタイル
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
