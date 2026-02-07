@@ -90,6 +90,10 @@ npm run dev
 
 http://localhost:3000/login
 
+OAuth 連携を使う場合は、フロント側の受け口として以下を使用します。
+
+http://localhost:3000/login/callback
+
 
 ⸻
 
@@ -117,4 +121,3 @@ http://localhost:3000/login
 	•	「完璧に作る」より「続けて使える」を優先
 	•	家族（親・子）が直感的に使える UI を重視
 	•	実運用しながら改善していくスタイル
-
