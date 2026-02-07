@@ -1,13 +1,13 @@
 "use client";
 
-import { FormEvent, useState } from "react";
+import { FormEvent, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { apiFetch, ApiError } from "@/lib/api";
 import { setToken } from "@/lib/auth";
 import AppShell from "@/components/AppShell";
 import TopBar from "@/components/TopBar";
 import { Field, TextInput } from "@/components/Field";
-import { PrimaryButton } from "@/components/Button";
+import { PrimaryButton, SecondaryButton } from "@/components/Button";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -15,6 +15,13 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [oauthLoading, setOauthLoading] = useState<"google" | "github" | null>(
+    null
+  );
+  const apiBaseUrl = useMemo(
+    () => process.env.NEXT_PUBLIC_API_BASE_URL ?? "",
+    []
+  );
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -37,6 +44,16 @@ export default function LoginPage() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleOauth = (provider: "google" | "github") => {
+    if (!apiBaseUrl) {
+      setError("API base URL が設定されていません");
+      return;
+    }
+    const normalizedBase = apiBaseUrl.replace(/\/+$/, "");
+    setOauthLoading(provider);
+    window.location.href = `${normalizedBase}/auth/oauth/${provider}/start`;
   };
 
   return (
@@ -79,6 +96,22 @@ export default function LoginPage() {
           ログイン
         </PrimaryButton>
       </form>
+      <div style={{ marginTop: "16px", display: "flex", gap: "12px" }}>
+        <SecondaryButton
+          onClick={() => handleOauth("google")}
+          loading={oauthLoading === "google"}
+          loadingText="リダイレクト中..."
+        >
+          Googleでログイン
+        </SecondaryButton>
+        <SecondaryButton
+          onClick={() => handleOauth("github")}
+          loading={oauthLoading === "github"}
+          loadingText="リダイレクト中..."
+        >
+          GitHubでログイン
+        </SecondaryButton>
+      </div>
     </AppShell>
   );
 }
