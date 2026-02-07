@@ -51,8 +51,9 @@ export default function LoginPage() {
       setError("API base URL が設定されていません");
       return;
     }
+    const normalizedBase = apiBaseUrl.replace(/\/+$/, "");
     setOauthLoading(provider);
-    window.location.href = `${apiBaseUrl}/auth/oauth/${provider}/start`;
+    window.location.href = `${normalizedBase}/auth/oauth/${provider}/start`;
   };
 
   return (
