@@ -44,6 +44,31 @@ export function TextInput(props: InputHTMLAttributes<HTMLInputElement>) {
   return <input {...props} style={{ ...inputStyle, ...props.style }} />;
 }
 
+export function DateInput(props: InputHTMLAttributes<HTMLInputElement>) {
+  const handlePicker = (
+    event: React.MouseEvent<HTMLInputElement> | React.FocusEvent<HTMLInputElement>,
+  ) => {
+    const input = event.currentTarget as HTMLInputElement & {
+      showPicker?: () => void;
+    };
+    try {
+      input.showPicker?.();
+    } catch {
+      // Some browsers throw if showPicker is not allowed.
+    }
+    props.onClick?.(event as React.MouseEvent<HTMLInputElement>);
+  };
+
+  return (
+    <input
+      {...props}
+      type="date"
+      onClick={handlePicker}
+      style={{ ...inputStyle, width: "100%", display: "block", ...props.style }}
+    />
+  );
+}
+
 export function NumberInput(props: InputHTMLAttributes<HTMLInputElement>) {
   return (
     <input
