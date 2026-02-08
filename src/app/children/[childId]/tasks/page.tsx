@@ -8,6 +8,7 @@ import AppShell from "@/components/AppShell";
 import TopBar from "@/components/TopBar";
 import { Field, NumberInput, TextArea, TextInput } from "@/components/Field";
 import { PrimaryButton, SecondaryButton } from "@/components/Button";
+import UserBadge from "@/components/UserBadge";
 
 type Task = {
   id: string;
@@ -246,7 +247,11 @@ export default function TasksPage() {
 
   return (
     <AppShell>
-      <TopBar title="タスク管理" backHref={`/children/${childId}`} />
+      <TopBar
+        title="タスク管理"
+        backHref={`/children/${childId}`}
+        actions={<UserBadge />}
+      />
 
       <div style={{ display: "grid", gap: "24px" }}>
         <section style={{ display: "grid", gap: "12px", maxWidth: "520px" }}>

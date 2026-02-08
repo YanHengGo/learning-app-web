@@ -9,6 +9,7 @@ import AppShell from "@/components/AppShell";
 import TopBar from "@/components/TopBar";
 import { Field, TextInput } from "@/components/Field";
 import { PrimaryButton, SecondaryButton } from "@/components/Button";
+import UserBadge from "@/components/UserBadge";
 
 export default function ChildCreatePage() {
   const router = useRouter();
@@ -68,7 +69,11 @@ export default function ChildCreatePage() {
 
   return (
     <AppShell>
-      <TopBar title="子供追加" backHref="/children" />
+      <TopBar
+        title="子供追加"
+        backHref="/children"
+        actions={<UserBadge />}
+      />
       <form
         onSubmit={handleSubmit}
         style={{ display: "grid", gap: "16px", maxWidth: "420px" }}

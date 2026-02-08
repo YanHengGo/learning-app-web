@@ -8,6 +8,7 @@ import AppShell from "@/components/AppShell";
 import TopBar from "@/components/TopBar";
 import { PrimaryButton, SecondaryButton } from "@/components/Button";
 import { Field, TextInput } from "@/components/Field";
+import UserBadge from "@/components/UserBadge";
 
 type SummaryItem = {
   minutes: number;
@@ -134,7 +135,11 @@ export default function SummaryPage() {
 
   return (
     <AppShell>
-      <TopBar title="学習サマリー" backHref={`/children/${childId}`} />
+      <TopBar
+        title="学習サマリー"
+        backHref={`/children/${childId}`}
+        actions={<UserBadge />}
+      />
 
       <div style={{ display: "flex", gap: "8px", marginBottom: "12px" }}>
         <SecondaryButton

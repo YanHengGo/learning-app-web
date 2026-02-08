@@ -9,6 +9,7 @@ import AppShell from "@/components/AppShell";
 import TopBar from "@/components/TopBar";
 import { Field, TextInput } from "@/components/Field";
 import { PrimaryButton, SecondaryButton } from "@/components/Button";
+import UserBadge from "@/components/UserBadge";
 
 type Status = "idle" | "loading" | "success" | "error";
 
@@ -134,7 +135,11 @@ export default function ChildDetailPage() {
 
   return (
     <AppShell>
-      <TopBar title="子供詳細" backHref="/children" />
+      <TopBar
+        title="子供詳細"
+        backHref="/children"
+        actions={<UserBadge />}
+      />
 
       {status === "loading" && <p>Loading...</p>}
 
