@@ -15,6 +15,7 @@ type DailyTask = {
   name: string;
   minutes: number;
   is_done: boolean;
+  days_mask: number;
 };
 
 type DailyView = {
@@ -111,10 +112,13 @@ export default function DailyPage() {
         `/children/${childId}/daily-view?date=${selectedDate}`,
         { token }
       );
-      const nextTasks = (data.tasks ?? []).map((task) => ({
-        ...task,
-        checked: task.is_done,
-      }));
+      const dayMask = 1 << selectedDateValue.getDay();
+      const nextTasks = (data.tasks ?? [])
+        .filter((task) => (task.days_mask & dayMask) !== 0)
+        .map((task) => ({
+          ...task,
+          checked: task.is_done,
+        }));
       setTasks(nextTasks);
       setStatus("success");
     } catch (err) {
