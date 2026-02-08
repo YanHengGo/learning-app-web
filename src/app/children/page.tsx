@@ -8,6 +8,7 @@ import type { Child } from "@/types/child";
 import AppShell from "@/components/AppShell";
 import TopBar from "@/components/TopBar";
 import { PrimaryButton, SecondaryButton } from "@/components/Button";
+import UserBadge from "@/components/UserBadge";
 
 type Status = "idle" | "loading" | "success" | "error";
 
@@ -69,6 +70,7 @@ export default function ChildrenPage() {
         title="子供一覧"
         actions={
           <>
+            <UserBadge />
             <PrimaryButton onClick={() => router.push("/children/new")}>
               ＋子供追加
             </PrimaryButton>

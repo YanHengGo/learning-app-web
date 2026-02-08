@@ -7,6 +7,7 @@ import { clearToken, getToken } from "@/lib/auth";
 import AppShell from "@/components/AppShell";
 import TopBar from "@/components/TopBar";
 import { PrimaryButton, SecondaryButton } from "@/components/Button";
+import UserBadge from "@/components/UserBadge";
 
 type DailyTask = {
   task_id: string;
@@ -277,7 +278,11 @@ export default function DailyPage() {
 
   return (
     <AppShell>
-      <TopBar title="今日の学習" backHref={`/children/${childId}`} />
+      <TopBar
+        title="今日の学習"
+        backHref={`/children/${childId}`}
+        actions={<UserBadge />}
+      />
 
       <div style={{ marginBottom: "16px" }}>
         <p style={{ margin: 0, color: "#475569" }}>{selectedDate}</p>
