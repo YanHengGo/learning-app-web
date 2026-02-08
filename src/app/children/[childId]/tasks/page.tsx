@@ -6,7 +6,7 @@ import { apiFetch, ApiError } from "@/lib/api";
 import { clearToken, getToken } from "@/lib/auth";
 import AppShell from "@/components/AppShell";
 import TopBar from "@/components/TopBar";
-import { Field, NumberInput, TextArea, TextInput } from "@/components/Field";
+import { DateInput, Field, NumberInput, TextArea, TextInput } from "@/components/Field";
 import { PrimaryButton, SecondaryButton } from "@/components/Button";
 import UserBadge from "@/components/UserBadge";
 
@@ -19,6 +19,8 @@ type Task = {
   days_mask: number;
   is_archived?: boolean;
   sort_order?: number;
+  start_date?: string | null;
+  end_date?: string | null;
 };
 
 type Status = "idle" | "loading" | "success" | "error";
@@ -34,6 +36,9 @@ const maskToDays = (mask: number) =>
 
 const daysToMask = (days: boolean[]) =>
   days.reduce((acc, checked, index) => acc + (checked ? 1 << index : 0), 0);
+
+const toDateInputValue = (value?: string | null) =>
+  value ? value.slice(0, 10) : "";
 
 export default function TasksPage() {
   const router = useRouter();
@@ -58,6 +63,8 @@ export default function TasksPage() {
     DAYS.map(() => false)
   );
   const [isArchived, setIsArchived] = useState(false);
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
   const allDaysSelected = days.every(Boolean);
 
   const resetForm = () => {
@@ -68,6 +75,8 @@ export default function TasksPage() {
     setDefaultMinutes("30");
     setDays(DAYS.map(() => false));
     setIsArchived(false);
+    setStartDate("");
+    setEndDate("");
     setSaveError(null);
   };
 
@@ -120,6 +129,8 @@ export default function TasksPage() {
     setDefaultMinutes(String(task.default_minutes));
     setDays(maskToDays(task.days_mask));
     setIsArchived(Boolean(task.is_archived));
+    setStartDate(toDateInputValue(task.start_date));
+    setEndDate(toDateInputValue(task.end_date));
     setSaveError(null);
   };
 
@@ -147,6 +158,11 @@ export default function TasksPage() {
       return;
     }
 
+    if (startDate && endDate && startDate > endDate) {
+      setSaveError("開始日は終了日以前に設定してください");
+      return;
+    }
+
     const minutesValue = Number(defaultMinutes);
     if (Number.isNaN(minutesValue)) {
       setSaveError("デフォルト分数が不正です");
@@ -163,6 +179,8 @@ export default function TasksPage() {
       default_minutes: minutesValue,
       days_mask: daysToMask(days),
       is_archived: isArchived,
+      start_date: startDate ? startDate : null,
+      end_date: endDate ? endDate : null,
     };
 
     try {
@@ -293,6 +311,18 @@ export default function TasksPage() {
               onChange={(event) => setDefaultMinutes(event.target.value)}
             />
           </Field>
+          <Field label="開始日">
+            <DateInput
+              value={startDate}
+              onChange={(event) => setStartDate(event.target.value)}
+            />
+          </Field>
+          <Field label="終了日">
+            <DateInput
+              value={endDate}
+              onChange={(event) => setEndDate(event.target.value)}
+            />
+          </Field>
           <div style={{ display: "grid", gap: "6px" }}>
             <span style={{ fontSize: "13px", color: "#334155" }}>曜日</span>
             <div style={{ display: "flex", gap: "12px", flexWrap: "wrap" }}>
@@ -416,6 +446,14 @@ export default function TasksPage() {
                         .filter(Boolean)
                         .join(" ") || "未設定"}
                       {task.is_archived ? " / アーカイブ" : ""}
+                    </p>
+                    <p style={{ margin: 0, color: "#64748b" }}>
+                      開始日:{" "}
+                      {task.start_date
+                        ? toDateInputValue(task.start_date)
+                        : "未設定"}{" "}
+                      / 終了日:{" "}
+                      {task.end_date ? toDateInputValue(task.end_date) : "未設定"}
                     </p>
                   </div>
                 ))
